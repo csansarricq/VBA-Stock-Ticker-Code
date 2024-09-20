@@ -1,0 +1,115 @@
+Sub tickerloop()
+
+
+Dim i As Long
+Dim closeprice As Double
+Dim openprice As Double
+Dim startprice As Long: startprice = 2
+Dim tickerrow As Long: tickerrow = 1
+Dim quartprice As Double
+Dim percentchange As Double
+Dim tickerchange As String
+Dim tickerstart As Double: tickerstart = 2
+Dim totalvol As Double: totalvol = 0
+Dim tickertrack As Double: tickertrack = 2
+Dim greatestin As Double
+Dim greatestde As Double
+Dim greatestintick As String
+Dim greatestdetick As String
+Dim greatestvol As Double
+Dim greatestvoltick As String
+
+    Cells(1, 9).Value = "Ticker"
+    Cells(1, 10).Value = "Quarterly Change"
+    Cells(1, 11).Value = "Percent Change"
+    Cells(1, 12).Value = "Total Stock Volume"
+    Cells(1, 15).Value = "Ticker"
+    Cells(1, 16).Value = "Value"
+    Cells(2, 14).Value = "Greatest % Increase"
+    Cells(3, 14).Value = "Greatest % Decrease"
+    Cells(4, 14).Value = "Greatest Total Volume"
+    
+    
+For i = 2 To 93001
+
+    If Cells(i + 1, 1).Value <> Cells(i, 1).Value Then
+        
+        tickerrow = tickerrow + 1
+        
+        tickerchange = Cells(i, 1).Value
+        
+        Cells(tickerrow, 9).Value = tickerchange
+        
+        openprice = Cells(tickerstart, 3).Value
+        closeprice = Cells(i, 6).Value
+        
+        quartprice = closeprice - openprice
+        Cells(tickerrow, 10).Value = quartprice
+        
+        totalvol = Application.WorksheetFunction.Sum(Range(Cells(tickerstart, 7), Cells(i, 7)))
+        Cells(tickerrow, 12).Value = totalvol
+              
+        
+        If openprice <> 0 Then
+            percentchange = (quartprice / openprice)
+            Cells(tickerrow, 11).Value = percentchange
+            
+        Else
+            percentchange = 0
+        End If
+        
+            
+        If percentchange > greatestin Then
+            greatestin = percentchange
+            greatestintick = tickerchange
+            Cells(2, 16).Value = FormatPercent(greatestin)
+        End If
+        
+        
+        If percentchange < greatestde Then
+            greatestde = percentchange
+            greatestdetick = tickerchange
+            Cells(3, 16).Value = FormatPercent(greatestde)
+        End If
+        
+        
+        If totalvol > greatestvol Then
+            greatestvol = totalvol
+            greatestvoltick = tickerchange
+            Cells(4, 16).Value = totalvol
+            
+        End If
+        
+        
+        tickerstart = i + 1
+        
+        
+        If Cells(tickerrow, 10).Value < 0 Then
+            Cells(tickerrow, 10).Interior.ColorIndex = 3
+            
+        
+        ElseIf Cells(tickerrow, 10).Value > 0 Then
+            Cells(tickerrow, 10).Interior.ColorIndex = 4
+            
+        End If
+                    
+        
+    Else
+     
+        percentchange = 0
+        
+     
+    End If
+    
+    
+Next i
+        Cells(2, 15).Value = greatestintick
+        Cells(3, 15).Value = greatestdetick
+        Cells(4, 15).Value = greatestvoltick
+        
+        
+        
+End Sub
+
+
+
